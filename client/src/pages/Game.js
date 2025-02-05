@@ -253,37 +253,6 @@ export default function Game() {
     trashRef.current = [];
   };
 
-  // const updateGameData = async (score) => {
-  
-  //   if (!userId) {
-  //     console.error('userId no está definido. Abortando fetch.');
-  //     return;
-  //   }
-  
-  //   console.log('Enviando datos al backend:', { userId, score }); 
-  
-  //   try {
-  //     const response = await fetch('http://localhost:5000/api/game-data/update', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `Bearer ${token}`, 
-  //       },
-  //       body: JSON.stringify({ userId, score }),
-  //     });
-  
-  
-  //     if (!response.ok) {
-  //       throw new Error(`Error en la respuesta del backend: ${response.statusText}`);
-  //     }
-  
-  //     const data = await response.json();
-  //     console.log('Respuesta del backend:', data); 
-  //   } catch (error) {
-  //     console.error('Error al guardar los datos del juego:', error);
-  //   }
-  // };
-
 
   const updateGameData = async (score) => {
     console.log('🔵 Enviando datos al backend:', { userId, score });
@@ -330,10 +299,6 @@ export default function Game() {
       console.error('❌ Error al guardar los datos del juego:', error);
     }
 };
-
-  
-  
-  
 
   return (
     <div

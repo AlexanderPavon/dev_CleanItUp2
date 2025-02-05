@@ -90,16 +90,6 @@ router.get("/top-scores", async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
 // Obtener estadísticas de los árboles
 router.get('/trees-stats', async (req, res) => {
   try {
