@@ -1,0 +1,123 @@
+/* Fondo degradado y centrado verticalmente */
+.register-page {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #D3F1DF, #85A98F);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Tarjeta (card) para el formulario */
+  .register-card {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+  }
+  
+  /* Título */
+  .register-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #47663B;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Mensaje de error */
+  .register-error {
+    color: #dc3545;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  /* Formulario */
+  .register-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Envoltorio de cada input, para poner el ícono a la izquierda y el "ojo" a la derecha */
+  .register-input-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  
+  /* Ícono a la izquierda */
+  .register-input-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 1.1rem;
+  }
+  
+  /* Input en sí */
+  .register-input {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem; 
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.3s;
+  }
+  
+  .register-input:focus {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 2px rgba(76,175,80,0.2);
+  }
+  
+  /* Botón para mostrar/ocultar contraseña */
+  .password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #47663B;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  
+  /* Botón "Registrarse" */
+  .register-button {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(90deg, #85A98F, #D3F1DF);
+    border: none;
+    border-radius: 0.5rem;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: opacity 0.3s;
+  }
+  
+  .register-button:hover {
+    opacity: 0.9;
+  }
+  
+  /* Enlace final de "¿Ya tienes cuenta?" */
+  .register-footer {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  .register-footer a {
+    color: #5A6C57;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  
+  .register-footer a:hover {
+    text-decoration: underline;
+  }
+  

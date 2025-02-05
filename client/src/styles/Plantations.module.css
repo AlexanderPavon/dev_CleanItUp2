@@ -1,0 +1,178 @@
+/* Fondo del body */
+body {
+    background: linear-gradient(180deg, #78a485 0%, #40916c 100%);
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333; 
+    height: 100vh;
+  }
+  
+  .section {
+    margin: 0;
+    margin-top: 90px; /* Compensa la altura del navbar */
+    height: calc(100vh - 80px); /* Asegura que no se exceda el tamaño total de la ventana */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+    gap: 2rem;
+  }
+  
+  
+  .plantacionContainer {
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+  }
+  
+  .title {
+    font-size: 2rem;
+    color: #2d6a4f;
+    margin-bottom: 1rem;
+  }
+  
+  .description {
+    font-size: 1.2rem;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+  }
+  
+  .stat {
+    text-align: center;
+    background: #e9f5ec;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    flex: 1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .statNumber {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1b4332;
+  }
+  
+  .statLabel {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 0.5rem;
+  }
+  
+  .plantacionList {
+    background: #f1f1f1;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .listTitle {
+    font-size: 1.5rem;
+    color: #2d6a4f;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+  
+  .userList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .userItem {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    background: #e9f5ec;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .userItem strong {
+    color: #1b4332;
+  }
+  
+
+   /* Formulario de actualización */
+  input[type="number"] {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    margin-right: 0.5rem;
+    width: 150px;
+  }
+  
+  button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #2d6a4f;
+    color: white;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #1b4332;
+  }
+  
+  /* Mensaje de error */
+  .error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Responsivo */
+  @media (max-width: 768px) {
+    .section {
+      padding: 1rem;
+    }
+  
+    .plantacion-container,
+    .plantacion-list {
+      padding: 1rem;
+    }
+  
+    .title {
+      font-size: 1.8rem;
+    }
+  
+    .description {
+      font-size: 1rem;
+    }
+  
+    .stat-number {
+      font-size: 1.5rem;
+    }
+  
+    .list-title {
+      font-size: 1.2rem;
+    }
+  
+    .user-list li {
+      font-size: 1rem;
+    }
+  
+    input[type="number"] {
+      width: 100px;
+    }
+  }
+  

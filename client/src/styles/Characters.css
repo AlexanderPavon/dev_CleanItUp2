@@ -1,0 +1,224 @@
+/* Characters.css */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+  }
+  
+  /* Fondo degradado para la página de personajes */
+  .characters-page {
+    margin-top: 80px; /* Para no tapar el navbar fixed */
+    min-height: 100vh;
+    background: linear-gradient(180deg, #78a485 0%, #40916c 100%);
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  
+  /* Contenedor interno para centrar y controlar ancho máximo */
+  .characters-container {
+    max-width: 1200px; 
+    margin: 0 auto;
+  }
+  
+  /* Título principal */
+  .characters-title {
+    text-align: center;
+    font-size: 2.4rem;
+    color: #2d6a4f;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .characters-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #2d6a4f;
+    margin: 0.5rem auto 0; 
+    border-radius: 2px;
+  }
+  
+  /* Mensajes de error */
+  .error-message {
+    color: red;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  /* =============== Formulario de Crear Personaje =============== */
+  .create-form {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .create-form h2 {
+    font-size: 1.6rem;
+    color: #2d6a4f;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .create-form input[type="text"],
+  .create-form input[type="file"],
+  .create-form textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  
+  .create-form textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .create-form .btn-primary {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    background-color: #798645;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .create-form .btn-primary:hover {
+    background-color: #1b4332;
+  }
+  
+  /* =============== Lista de Personajes =============== */
+  .characters-list h2 {
+    font-size: 1.8rem;
+    color: #2d6a4f;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .character-card .btn-warning {
+    background-color: #FBFADA;
+    color: #333;
+  }
+  
+  .character-card .btn-danger {
+    background-color: #ADBC9F;
+    color: #fff;
+  }
+  
+  .character-card .btn-success {
+    background-color: #436850;
+    color: #fff;
+  }
+  
+  .character-card .btn-warning:hover,
+  .character-card .btn-danger:hover,
+  .character-card .btn-success:hover {
+    opacity: 0.9;
+  }
+
+  .character-card {
+    background-color: #fff;
+    margin: 20px auto; /* auto para que se centre horizontalmente */
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 800px; /* Ajusta según tu preferencia */
+    max-width: 90%;
+    align-items: center;
+    text-align: center; /* Centra texto dentro de la tarjeta */
+  }
+  
+  .character-card img {
+    margin-bottom: 0.5rem;
+    /* Si quieres achicar la imagen un poco: */
+    width: 80px;
+    height: auto;
+    border-radius: 5px;
+  }
+  
+  .character-card h3,
+  .character-card p {
+    margin: 0.5rem 0;
+  }
+  
+  /* Botones alineados en el centro, con algo de separación */
+   .character-card .btn {
+    margin: 0.5rem 0.5rem; 
+    display: inline-block;
+  } 
+  
+  
+  /* ===================== Formulario de Edición ===================== */
+  .character-card input[type="text"],
+  .character-card input[type="file"],
+  .character-card textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .character-card textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+  
+  /* Personaje principal aparte */
+  .main-character {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 1rem;
+    margin-top: 2rem;
+    text-align: center;
+  }
+  
+  .main-character h2 {
+    font-size: 1.6rem;
+    color: #2d6a4f;
+    margin-bottom: 1rem;
+  }
+  
+  .main-character img {
+    width: 100px;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* =============== Responsivo =============== */
+  @media (max-width: 768px) {
+    .create-form, .character-card, .main-character {
+      padding: 1rem;
+    }
+  
+    .character-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .character-card img {
+      margin-bottom: 1rem;
+    }
+  
+    .character-card h3 {
+      margin: 0.5rem 0;
+    }
+  
+    .character-card .btn {
+      margin: 0.5rem;
+    }
+  }
+  

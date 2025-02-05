@@ -1,0 +1,80 @@
+/* Fondo de la página */
+.set-username-page {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #D3F1DF, #85A98F); /* Fondo degradado */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Contenedor principal (tarjeta) */
+.set-username-card {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Sombra */
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Título */
+.set-username-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #47663B;
+    margin-bottom: 1.5rem;
+}
+
+/* Mensaje de error */
+.set-username-error {
+    color: #dc3545; /* Rojo */
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+/* Formulario */
+.set-username-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Input */
+.set-username-form input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.set-username-form input:focus {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* Botón */
+.set-username-form button {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(90deg, #85A98F, #D3F1DF); /* Degradado */
+    border: none;
+    border-radius: 0.5rem;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.set-username-form button:hover {
+    background: linear-gradient(90deg, #76A079, #C8E6C9); /* Más claro */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}

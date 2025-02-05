@@ -1,0 +1,103 @@
+/* Fondo con un suave degradado vertical */
+body {
+  background: linear-gradient(180deg, #78a485 0%, #40916c 100%);
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333; 
+  height: 100vh;
+}
+
+/* Sección que ajusta su altura */
+.section {
+  margin: 0; 
+  height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box; 
+}
+
+/* Tarjeta (card) centrada con sombra */
+.card {
+  margin: auto; 
+  background-color: #fff; 
+  width: 90%;
+  max-width: 800px;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  overflow: hidden;
+}
+
+
+/* Título principal */
+.card h1 {
+  font-size: 2.2rem;
+  color: #2d6a4f;
+  margin-bottom: 1rem; 
+  position: relative;
+}
+
+/* Línea decorativa bajo el h1 */
+.card h1::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background-color: #2d6a4f;
+  margin: 0.5rem auto 0; 
+  border-radius: 2px;
+}
+
+/* Tabla de Ranking */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  padding: 0.8rem;
+  text-align: center;
+  font-size: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #40916c;
+  color: white;
+  font-weight: bold;
+}
+
+td {
+  background-color: #f4f4f4;
+}
+
+tr:hover td {
+  background-color: #e1f5e3;
+  cursor: pointer;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .section {
+      margin-top: 80px;
+      padding: 1rem;
+  }
+
+  .card {
+      padding: 1rem;
+  }
+
+  .card h1 {
+      font-size: 1.8rem;
+  }
+
+  table {
+      font-size: 0.9rem;
+  }
+}
