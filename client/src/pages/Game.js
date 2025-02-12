@@ -190,7 +190,7 @@ export default function Game() {
     const spawnTrash = () => {
       if (!gamePaused) {
         const x = Math.random() * 370;
-        const speed = 2 + Math.random() * 3;
+        const speed = 1 + Math.random() * 3;
         const img = trashImgs[Math.floor(Math.random() * trashImgs.length)];
         trashRef.current.push({ id: Date.now(), x, y: 0, speed, img });
       }

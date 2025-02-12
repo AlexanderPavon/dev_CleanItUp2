@@ -84,7 +84,6 @@ router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    // ⚠️ Verificar si el personaje está seleccionado por algún usuario
     const userUsingCharacter = await User.findOne({ where: { selectedCharacterId: id } });
 
     if (userUsingCharacter) {
@@ -102,7 +101,6 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Error al eliminar personaje", error: err.message });
   }
 });
-
 
 // ==================================================
 // ======  SET SELECTED CHARACTER IN USER  ==========
@@ -134,18 +132,33 @@ router.get("/selected/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
 
+    // Buscar usuario con su personaje seleccionado usando el alias correcto
     const user = await User.findByPk(userId, {
-      include: { model: Character },
+      include: [
+        {
+          model: Character,
+          as: 'selectedCharacter',
+        },
+      ],
     });
 
-    if (!user || !user.selectedCharacterId) {
-      return res.status(404).json({ message: "El usuario no tiene un personaje seleccionado" });
+    if (!user || !user.selectedCharacter) {
+      return res.status(404).json({ 
+        message: "El usuario no tiene un personaje seleccionado",
+        userId,
+        user: user ? 'encontrado' : 'no encontrado',
+        selectedCharacter: user ? (user.selectedCharacter ? 'encontrado' : 'no encontrado') : 'n/a'
+      });
     }
 
-    const selectedCharacter = await Character.findByPk(user.selectedCharacterId);
-    res.json(selectedCharacter);
+    res.json(user.selectedCharacter);
   } catch (err) {
-    res.status(500).json({ message: "Error al obtener el personaje seleccionado", error: err.message });
+    console.error('Error detallado:', err);
+    res.status(500).json({ 
+      message: "Error al obtener el personaje seleccionado", 
+      error: err.message,
+      stack: err.stack 
+    });
   }
 });
 
