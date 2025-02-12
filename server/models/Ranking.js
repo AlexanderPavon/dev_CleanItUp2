@@ -53,24 +53,31 @@ Ranking.prototype.updateRanking = async function() {
   
   if (!user) return;
 
-  // Calcular nuevo ranking basado en bestScore
-  const betterPlayers = await User.count({
-    where: {
-      bestScore: {
-        [sequelize.Op.gt]: user.bestScore
-      }
-    }
+  // Obtener el ranking del usuario actual
+  const [result] = await sequelize.query(`
+    SELECT subquery.rank as current_rank
+    FROM (
+      SELECT id,
+             RANK() OVER (ORDER BY "bestScore" DESC) as rank
+      FROM "Users"
+      WHERE "bestScore" > 0
+    ) as subquery
+    WHERE id = :userId
+  `, {
+    replacements: { userId: this.idPlayer },
+    type: sequelize.QueryTypes.SELECT
   });
 
-  const newRanking = betterPlayers + 1;
-  const updates = { currentRanking: newRanking };
-  
-  // Actualizar mejor ranking si corresponde
-  if (!this.bestRanking || newRanking < this.bestRanking) {
-    updates.bestRanking = newRanking;
-  }
+  // Obtener el ranking actual (o usar el último + 1 si no tiene puntuación)
+  const currentRank = result ? result.current_rank : await User.count() + 1;
 
-  await this.update(updates);
+  // Actualizar el ranking actual
+  await this.update({ currentRanking: currentRank });
+  
+  // Actualizar el mejor ranking si corresponde
+  if (!this.bestRanking || currentRank < this.bestRanking) {
+    await this.update({ bestRanking: currentRank });
+  }
 };
 
 // Método de clase para actualizar todos los rankings

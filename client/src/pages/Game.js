@@ -22,6 +22,7 @@ export default function Game() {
 
   const { token } = useAuth();
   const userId = token ? JSON.parse(atob(token.split('.')[1])).userId : null;
+  
   useEffect(() => {
     console.log('Token JWT:', token);
     if (token) {
@@ -49,7 +50,6 @@ export default function Game() {
     scoreRef.current = score;
   }, [score]);
 
-  // Obtener el personaje principal seleccionado por el usuario
   useEffect(() => {
     const fetchMainCharacter = async () => {
       try {
@@ -59,7 +59,7 @@ export default function Game() {
 
         if (!res.ok) throw new Error('No se pudo obtener el personaje principal');
         const data = await res.json();
-        setCharacter(data); // Guardar los datos del personaje principal
+        setCharacter(data);
       } catch (error) {
         console.error('Error al obtener el personaje principal:', error);
       }
@@ -68,14 +68,12 @@ export default function Game() {
     if (userId) fetchMainCharacter();
   }, [userId, token]);
 
-  // Actualización del fondo basado en el puntaje
   useEffect(() => {
-    const interval = 5; // Intervalo de puntaje para cambiar el fondo
+    const interval = 25;
     const newIndex = Math.floor(score / interval) % backgrounds.length;
     setBackgroundIndex(newIndex);
   }, [score, backgrounds]);
 
-  // Control del teclado
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowLeft') {
@@ -102,7 +100,6 @@ export default function Game() {
     };
   }, []);
 
-  // Movimiento del personaje
   useEffect(() => {
     const movePlayer = () => {
       if (!gameActive) return;
@@ -123,8 +120,22 @@ export default function Game() {
 
     return () => clearInterval(interval);
   }, [gameActive, gamePaused]);
+
+  const calculateSpeed = (currentScore) => {
+    const baseSpeed = 2;
+    const speedIncrease = 0.3;
+    return baseSpeed + (Math.floor(currentScore / 10) * speedIncrease);
+  };
+
+  const calculateSpawnInterval = (currentScore) => {
+    const baseInterval = 800;
+    const intervalDecrease = 50;
+    const minInterval = 200;
+    
+    const newInterval = baseInterval - (Math.floor(currentScore / 10) * intervalDecrease);
+    return Math.max(newInterval, minInterval);
+  };
   
-  // Movimiento de la basura
   const moveTrash = () => {
     if (!gameActive || gamePaused) return;
 
@@ -141,14 +152,12 @@ export default function Game() {
 
         if (!playerElement || !trashElement) return true;
 
-        // Detectar colisión
         if (checkCollision(playerElement, trashElement)) {
           trash.processed = true;
           gainPoint();
           return false;
         }
 
-        // Si la basura toca el suelo
         if (trash.y > 550) {
           trash.processed = true;
           loseLife();
@@ -187,17 +196,36 @@ export default function Game() {
   }, [gameActive, gamePaused]);
 
   useEffect(() => {
-    const spawnTrash = () => {
-      if (!gamePaused) {
-        const x = Math.random() * 370;
-        const speed = 1 + Math.random() * 3;
-        const img = trashImgs[Math.floor(Math.random() * trashImgs.length)];
-        trashRef.current.push({ id: Date.now(), x, y: 0, speed, img });
+    let intervalId;
+    
+    const updateSpawnInterval = () => {
+      if (intervalId) {
+        clearInterval(intervalId);
       }
+      
+      const spawnTrash = () => {
+        if (!gamePaused) {
+          const x = Math.random() * 370;
+          const currentSpeed = calculateSpeed(scoreRef.current);
+          const img = trashImgs[Math.floor(Math.random() * trashImgs.length)];
+          trashRef.current.push({ id: Date.now(), x, y: 0, speed: currentSpeed, img });
+        }
+      };
+
+      const currentInterval = calculateSpawnInterval(scoreRef.current);
+      intervalId = setInterval(spawnTrash, currentInterval);
     };
 
-    const intervalId = setInterval(spawnTrash, 1000);
-    return () => clearInterval(intervalId);
+    updateSpawnInterval();
+
+    const scoreCheckInterval = setInterval(() => {
+      updateSpawnInterval();
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+      clearInterval(scoreCheckInterval);
+    };
   }, [gamePaused]);
 
   const checkCollision = (playerElement, trashElement) => {
@@ -224,63 +252,41 @@ export default function Game() {
 
   const gainPoint = () => setScore((prev) => prev + 1);
 
-  const endGame = () => { 
-    if (!gameActive || dataUpdated) return; 
-    
-    setDataUpdated(true); 
-    setGameActive(false); 
-    setGamePaused(false); 
-    trashRef.current = []; 
+  const saveGameData = async (score) => {
+    console.log('🎮 Guardando datos de la partida:', { userId, score });
   
-  
-    if (scoreRef.current > 0) { 
-      updateGameData(scoreRef.current); 
-    } else {
-      console.log('Score no es mayor que 0, no se llama a updateGameData.');
-    }
-  };
-  
-  
-  
-
-  const initGame = () => {
-    setScore(0);
-    setLives(3);
-    setGameActive(true);
-    setGamePaused(false);
-    setBackgroundIndex(0);
-    setDataUpdated(false);
-    trashRef.current = [];
-  };
-
-
-  const updateGameData = async (score) => {
-    console.log('🔵 Enviando datos al backend:', { userId, score });
-
     try {
-      // Actualiza los datos en PostgreSQL
-      console.log('🟢 Enviando solicitud a /update');
-      const response = await fetch('http://localhost:5000/api/game-data/update', {
+      const response = await fetch(`http://localhost:5000/api/games/save-game`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ userId, score }),
+        body: JSON.stringify({ 
+          score,
+          idPlayer: userId 
+        }),
       });
-
+  
       if (!response.ok) {
-        throw new Error(`❌ Error en la respuesta del backend: ${response.statusText}`);
+        throw new Error(`Error al guardar la partida: ${response.statusText}`);
       }
-
+  
       const data = await response.json();
-      console.log('✅ Respuesta de /update:', data);
+      console.log('✅ Partida guardada exitosamente:', data);
+    } catch (error) {
+      console.error('❌ Error al guardar la partida:', error);
+    }
+  };
 
-      // 🔴 **Verifica si el puntaje es suficiente para plantar un árbol**
+  const updateGameData = async (score) => {
+    console.log('🔵 Enviando datos al backend:', { userId, score });
+
+    try {
       if (score >= 250) {
         console.log('🌱 Score >= 250. Intentando incrementar árboles en MongoDB...');
 
-        const treeResponse = await fetch('http://localhost:5000/api/game-data/increment-trees-to-plant', {
+        const treeResponse = await fetch(`http://localhost:5000/api/game-data/increment-trees-to-plant`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ treesObtained: 1 }),
@@ -298,7 +304,33 @@ export default function Game() {
     } catch (error) {
       console.error('❌ Error al guardar los datos del juego:', error);
     }
-};
+  };
+
+  const endGame = () => { 
+    if (!gameActive || dataUpdated) return; 
+    
+    setDataUpdated(true); 
+    setGameActive(false); 
+    setGamePaused(false); 
+    trashRef.current = []; 
+  
+    if (scoreRef.current > 0) { 
+      saveGameData(scoreRef.current);
+      updateGameData(scoreRef.current);
+    } else {
+      console.log('Score no es mayor que 0, no se guardan los datos.');
+    }
+  };
+
+  const initGame = () => {
+    setScore(0);
+    setLives(3);
+    setGameActive(true);
+    setGamePaused(false);
+    setBackgroundIndex(0);
+    setDataUpdated(false);
+    trashRef.current = [];
+  };
 
   return (
     <div
