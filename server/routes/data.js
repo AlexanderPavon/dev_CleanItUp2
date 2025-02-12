@@ -32,8 +32,7 @@ router.post('/update', async (req, res) => {
 
       // Actualiza datos del usuario
       user.gamesPlayed += 1;
-      const scoreImproved = score > user.bestScore;
-      if (scoreImproved) {
+      if (score > user.bestScore) {
         user.bestScore = score;
       }
       if (score >= 250) {
@@ -44,27 +43,52 @@ router.post('/update', async (req, res) => {
 
       // Obtener o crear registro de ranking
       let ranking = await Ranking.findOne({
-        where: { idPlayer: userId },
-        transaction
+        where: { idPlayer: userId }
       });
 
       if (!ranking) {
         ranking = await Ranking.create({
-          idPlayer: userId
-        }, { transaction });
+          idPlayer: userId,
+          currentRanking: 0,
+          bestRanking: 0
+        });
       }
 
-      // Actualizar ranking
-      await ranking.updateRanking();
+      // Calcular el nuevo ranking
+      const betterPlayers = await User.count({
+        where: {
+          bestScore: {
+            [Op.gt]: user.bestScore
+          }
+        }
+      });
 
-      // Si todo sale bien, confirmar la transacción
+      const newRanking = betterPlayers + 1;
+
+      // Actualizar el ranking actual y el mejor si corresponde
+      const updates = { currentRanking: newRanking };
+      if (!ranking.bestRanking || newRanking < ranking.bestRanking) {
+        updates.bestRanking = newRanking;
+      }
+
+      await ranking.update(updates);
       await transaction.commit();
 
-      console.log("Usuario y ranking actualizados:", { user, ranking });
+      console.log("Usuario y ranking actualizados:", { 
+        user, 
+        ranking: {
+          currentRanking: newRanking,
+          bestRanking: updates.bestRanking || ranking.bestRanking
+        }
+      });
+
       res.status(200).json({
         message: 'Datos del juego actualizados correctamente.',
         user,
-        ranking
+        ranking: {
+          currentRanking: newRanking,
+          bestRanking: updates.bestRanking || ranking.bestRanking
+        }
       });
 
     } catch (error) {

@@ -283,6 +283,24 @@ export default function Game() {
     console.log('🔵 Enviando datos al backend:', { userId, score });
 
     try {
+      // Actualiza los datos en PostgreSQL
+      console.log('🟢 Enviando solicitud a /update');
+      const response = await fetch('http://localhost:5000/api/game-data/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId, score }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`❌ Error en la respuesta del backend: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Respuesta de /update:', data);
+
       if (score >= 250) {
         console.log('🌱 Score >= 250. Intentando incrementar árboles en MongoDB...');
 

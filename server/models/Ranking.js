@@ -49,34 +49,64 @@ const Ranking = sequelize.define("Ranking", {
 // Método para actualizar el ranking de un jugador
 Ranking.prototype.updateRanking = async function() {
   const User = require('./User');
-  const user = await User.findByPk(this.idPlayer);
   
-  if (!user) return;
+  try {
+    // Obtener todos los usuarios ordenados por bestScore
+    const [userRankings] = await sequelize.query(`
+      WITH RankedUsers AS (
+        SELECT 
+          id,
+          DENSE_RANK() OVER (ORDER BY "bestScore" DESC) as rank
+        FROM "Users"
+        WHERE "bestScore" > 0
+      )
+      SELECT rank
+      FROM RankedUsers
+      WHERE id = :userId
+    `, {
+      replacements: { userId: this.idPlayer },
+      type: sequelize.QueryTypes.SELECT
+    });
 
-  // Obtener el ranking del usuario actual
-  const [result] = await sequelize.query(`
-    SELECT subquery.rank as current_rank
-    FROM (
-      SELECT id,
-             RANK() OVER (ORDER BY "bestScore" DESC) as rank
-      FROM "Users"
-      WHERE "bestScore" > 0
-    ) as subquery
-    WHERE id = :userId
-  `, {
-    replacements: { userId: this.idPlayer },
-    type: sequelize.QueryTypes.SELECT
-  });
+    // Si el usuario tiene un ranking, actualizarlo
+    if (userRankings && userRankings.rank) {
+      const newRank = parseInt(userRankings.rank);
+      console.log('Nuevo ranking calculado:', newRank);
 
-  // Obtener el ranking actual (o usar el último + 1 si no tiene puntuación)
-  const currentRank = result ? result.current_rank : await User.count() + 1;
+      await this.update({ currentRanking: newRank });
 
-  // Actualizar el ranking actual
-  await this.update({ currentRanking: currentRank });
-  
-  // Actualizar el mejor ranking si corresponde
-  if (!this.bestRanking || currentRank < this.bestRanking) {
-    await this.update({ bestRanking: currentRank });
+      // Actualizar mejor ranking si corresponde
+      if (!this.bestRanking || newRank < this.bestRanking) {
+        await this.update({ bestRanking: newRank });
+      }
+    } else {
+      // Si el usuario no tiene puntuación, ponerlo al final
+      const totalUsers = await User.count({
+        where: {
+          bestScore: {
+            [sequelize.Op.gt]: 0
+          }
+        }
+      });
+      await this.update({ currentRanking: totalUsers + 1 });
+      
+      if (!this.bestRanking) {
+        await this.update({ bestRanking: totalUsers + 1 });
+      }
+    }
+
+    // Recargar el ranking actualizado
+    await this.reload();
+    
+    console.log('Ranking actualizado:', {
+      idPlayer: this.idPlayer,
+      currentRanking: this.currentRanking,
+      bestRanking: this.bestRanking
+    });
+
+  } catch (error) {
+    console.error('Error actualizando ranking:', error);
+    throw error;
   }
 };
 
