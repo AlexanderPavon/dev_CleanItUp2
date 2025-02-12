@@ -15,6 +15,7 @@ const {
 // Importar rutas
 const characterRoutes = require("./routes/characters");
 const authRoutes = require("./routes/auth");
+const dataRoutes = require("./routes/data");
 const gameDataRoutes = require("./routes/gameData");
 
 const app = express();
@@ -25,7 +26,9 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/characters", characterRoutes);
-app.use("/api/game-data", gameDataRoutes);
+app.use("/api/game-data", dataRoutes);
+app.use("/api/games", gameDataRoutes);
+
 
 // Sincronizar base de datos
 (async () => {
