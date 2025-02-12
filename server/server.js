@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { sequelize } = require("./config/db"); 
+const { authenticateUser } = require("./middleware/auth");
 
 // Importar modelos y sus asociaciones
 const { 
@@ -25,7 +26,7 @@ console.log("JWT_SECRET:", process.env.JWT_SECRET);
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
-app.use("/api/characters", characterRoutes);
+app.use("/api/characters", authenticateUser, characterRoutes);
 app.use("/api/game-data", dataRoutes);
 app.use("/api/games", gameDataRoutes);
 
