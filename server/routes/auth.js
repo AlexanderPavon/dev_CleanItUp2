@@ -3,38 +3,47 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize"); 
 const User = require("../models/User");
+const { sequelize } = require("../config/db"); 
+
 
 
 const router = express.Router();
 
-//  Registro de usuario en PostgreSQL
 router.post("/register", async (req, res) => {
+  const t = await sequelize.transaction(); // Iniciar una transacción
   try {
     const { username, email, password } = req.body;
 
-    // Validar que los campos no estén vacíos
     if (!username || !email || !password) {
       return res.status(400).json({ message: "Todos los campos son obligatorios" });
     }
 
-    // Verificar si el email ya existe
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({ where: { email } }, { transaction: t });
     if (existingUser) {
       return res.status(400).json({ message: "El correo electrónico ya está registrado" });
     }
 
-    // Verificar si el username ya existe
-    const existingUsername = await User.findOne({ where: { username } });
+    const existingUsername = await User.findOne({ where: { username } }, { transaction: t });
     if (existingUsername) {
       return res.status(400).json({ message: "El nombre de usuario ya está en uso" });
     }
 
-    // Crear usuario en la base de datos (sin encriptar contraseña)
-    const newUser = await User.create({ username, email, password });
+    // 🔹 Obtener el próximo ID antes del INSERT
+    const [userIdResult] = await sequelize.query("SELECT nextval(pg_get_serial_sequence('\"Users\"', 'id')) AS next_id", { transaction: t });
+    const nextUserId = userIdResult[0].next_id;
 
-    res.status(201).json({ message: "Usuario registrado exitosamente", user: newUser });
+    // 🔹 Establecer `user_id` en la sesión de PostgreSQL
+    await sequelize.query(`SELECT set_config('app.current_user_id', '${nextUserId}', false)`, { transaction: t });
+
+    // 🔹 Insertar usuario dentro de la transacción
+    const newUser = await User.create({ id: nextUserId, username, email, password }, { transaction: t });
+
+    await t.commit(); // Confirmar transacción
+
+    res.status(201).json({ message: "Usuario registrado exitosamente, por favor inicia sesión", user: newUser });
 
   } catch (error) {
+    await t.rollback(); // Revertir cambios si hay error
     console.error("❌ Error en el registro:", error);
     res.status(500).json({ message: "Error en el servidor" });
   }
@@ -43,6 +52,7 @@ router.post("/register", async (req, res) => {
 
 
 //  Login
+
 router.post("/login", async (req, res) => {
   const { identifier, password } = req.body;
   console.log("📩 Petición recibida en login:", { identifier, password });
@@ -90,6 +100,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Error en el login" });
   }
 });
+
 
 // Login con Google 
 router.post("/google-login", async (req, res) => {
